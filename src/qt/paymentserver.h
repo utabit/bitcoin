@@ -1,12 +1,12 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_PAYMENTSERVER_H
-#define BITCOIN_QT_PAYMENTSERVER_H
+#ifndef UTABIT_QT_PAYMENTSERVER_H
+#define UTABIT_QT_PAYMENTSERVER_H
 
 // This class handles payment requests from clicking on
-// bitcoin: URIs
+// utabit: URIs
 //
 // This is somewhat tricky, because we have to deal with
 // the situation where the user clicks on a link during
@@ -21,10 +21,10 @@
 //
 // When startup is finished and the main window is
 // shown, a signal is sent to slot uiReady(), which
-// emits a receivedURI() signal for any payment
+// emits a receivedURL() signal for any payment
 // requests that happened during startup.
 //
-// After startup, receivedURI() happens as usual.
+// After startup, receivedURL() happens as usual.
 //
 // This class has one more feature: a static
 // method that finds URIs passed in the command line
@@ -53,7 +53,7 @@ class QUrl;
 QT_END_NAMESPACE
 
 // BIP70 max payment request size in bytes (DoS protection)
-static const qint64 BIP70_MAX_PAYMENTREQUEST_SIZE = 50000;
+extern const qint64 BIP70_MAX_PAYMENTREQUEST_SIZE;
 
 class PaymentServer : public QObject
 {
@@ -75,12 +75,12 @@ public:
     PaymentServer(QObject* parent, bool startLocalServer = true);
     ~PaymentServer();
 
-    // Load root certificate authorities. Pass nullptr (default)
+    // Load root certificate authorities. Pass NULL (default)
     // to read from the file specified in the -rootcertificates setting,
     // or, if that's not set, to use the system default root certificates.
     // If you pass in a store, you should not X509_STORE_free it: it will be
     // freed either at exit or when another set of CAs are loaded.
-    static void LoadRootCAs(X509_STORE* store = nullptr);
+    static void LoadRootCAs(X509_STORE* store = NULL);
 
     // Return certificate store
     static X509_STORE* getCertStore();
@@ -145,4 +145,4 @@ private:
     OptionsModel *optionsModel;
 };
 
-#endif // BITCOIN_QT_PAYMENTSERVER_H
+#endif // UTABIT_QT_PAYMENTSERVER_H

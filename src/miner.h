@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_MINER_H
-#define BITCOIN_MINER_H
+#ifndef UTABIT_MINER_H
+#define UTABIT_MINER_H
 
 #include "primitives/block.h"
 #include "txmempool.h"
@@ -16,7 +16,9 @@
 
 class CBlockIndex;
 class CChainParams;
+class CReserveKey;
 class CScript;
+class CWallet;
 
 namespace Consensus { struct Params; };
 
@@ -141,7 +143,6 @@ private:
     bool fIncludeWitness;
     unsigned int nBlockMaxWeight, nBlockMaxSize;
     bool fNeedSizeAccounting;
-    CFeeRate blockMinFeeRate;
 
     // Information on the current status of the block
     uint64_t nBlockWeight;
@@ -156,19 +157,14 @@ private:
     int64_t nLockTimeCutoff;
     const CChainParams& chainparams;
 
+    // Variables used for addPriorityTxs
+    int lastFewTxs;
+    bool blockFinished;
+
 public:
-    struct Options {
-        Options();
-        size_t nBlockMaxWeight;
-        size_t nBlockMaxSize;
-        CFeeRate blockMinFeeRate;
-    };
-
-    BlockAssembler(const CChainParams& params);
-    BlockAssembler(const CChainParams& params, const Options& options);
-
+    BlockAssembler(const CChainParams& chainparams);
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true);
+    CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn);
 
 private:
     // utility functions
@@ -178,10 +174,16 @@ private:
     void AddToBlock(CTxMemPool::txiter iter);
 
     // Methods for how to add transactions to a block.
-    /** Add transactions based on feerate including unconfirmed ancestors
-      * Increments nPackagesSelected / nDescendantsUpdated with corresponding
-      * statistics from the package selection (for logging statistics). */
-    void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated);
+    /** Add transactions based on tx "priority" */
+    void addPriorityTxs();
+    /** Add transactions based on feerate including unconfirmed ancestors */
+    void addPackageTxs();
+
+    // helper function for addPriorityTxs
+    /** Test if tx will still "fit" in the block */
+    bool TestForBlock(CTxMemPool::txiter iter);
+    /** Test if tx still has unconfirmed parents not yet in block */
+    bool isStillDependent(CTxMemPool::txiter iter);
 
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */
@@ -199,13 +201,12 @@ private:
     /** Sort the package in an order that is valid to appear in a block */
     void SortForBlock(const CTxMemPool::setEntries& package, CTxMemPool::txiter entry, std::vector<CTxMemPool::txiter>& sortedEntries);
     /** Add descendants of given transactions to mapModifiedTx with ancestor
-      * state updated assuming given transactions are inBlock. Returns number
-      * of updated descendants. */
-    int UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set &mapModifiedTx);
+      * state updated assuming given transactions are inBlock. */
+    void UpdatePackagesForAdded(const CTxMemPool::setEntries& alreadyAdded, indexed_modified_transaction_set &mapModifiedTx);
 };
 
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
 
-#endif // BITCOIN_MINER_H
+#endif // UTABIT_MINER_H

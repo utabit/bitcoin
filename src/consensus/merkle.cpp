@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2016 The Bitcoin Core developers
+// Copyright (c) 2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -101,7 +101,7 @@ static void MerkleComputation(const std::vector<uint256>& leaves, uint256* proot
     bool matchh = matchlevel == level;
     while (count != (((uint32_t)1) << level)) {
         // If we reach this point, h is an inner value that is not the top.
-        // We combine it with itself (Bitcoin's special rule for odd levels in
+        // We combine it with itself (Utabit's special rule for odd levels in
         // the tree) to produce a higher level one.
         if (pbranch && matchh) {
             pbranch->push_back(h);
@@ -132,13 +132,13 @@ static void MerkleComputation(const std::vector<uint256>& leaves, uint256* proot
 
 uint256 ComputeMerkleRoot(const std::vector<uint256>& leaves, bool* mutated) {
     uint256 hash;
-    MerkleComputation(leaves, &hash, mutated, -1, nullptr);
+    MerkleComputation(leaves, &hash, mutated, -1, NULL);
     return hash;
 }
 
 std::vector<uint256> ComputeMerkleBranch(const std::vector<uint256>& leaves, uint32_t position) {
     std::vector<uint256> ret;
-    MerkleComputation(leaves, nullptr, nullptr, position, &ret);
+    MerkleComputation(leaves, NULL, NULL, position, &ret);
     return ret;
 }
 
@@ -160,7 +160,7 @@ uint256 BlockMerkleRoot(const CBlock& block, bool* mutated)
     std::vector<uint256> leaves;
     leaves.resize(block.vtx.size());
     for (size_t s = 0; s < block.vtx.size(); s++) {
-        leaves[s] = block.vtx[s]->GetHash();
+        leaves[s] = block.vtx[s].GetHash();
     }
     return ComputeMerkleRoot(leaves, mutated);
 }
@@ -171,7 +171,7 @@ uint256 BlockWitnessMerkleRoot(const CBlock& block, bool* mutated)
     leaves.resize(block.vtx.size());
     leaves[0].SetNull(); // The witness hash of the coinbase is 0.
     for (size_t s = 1; s < block.vtx.size(); s++) {
-        leaves[s] = block.vtx[s]->GetWitnessHash();
+        leaves[s] = block.vtx[s].GetWitnessHash();
     }
     return ComputeMerkleRoot(leaves, mutated);
 }
@@ -181,7 +181,7 @@ std::vector<uint256> BlockMerkleBranch(const CBlock& block, uint32_t position)
     std::vector<uint256> leaves;
     leaves.resize(block.vtx.size());
     for (size_t s = 0; s < block.vtx.size(); s++) {
-        leaves[s] = block.vtx[s]->GetHash();
+        leaves[s] = block.vtx[s].GetHash();
     }
     return ComputeMerkleBranch(leaves, position);
 }

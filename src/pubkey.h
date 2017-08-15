@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_PUBKEY_H
-#define BITCOIN_PUBKEY_H
+#ifndef UTABIT_PUBKEY_H
+#define UTABIT_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -13,7 +13,7 @@
 #include <stdexcept>
 #include <vector>
 
-/**
+/** 
  * secp256k1:
  * const unsigned int PRIVATE_KEY_SIZE = 279;
  * const unsigned int PUBLIC_KEY_SIZE  = 65;
@@ -88,9 +88,9 @@ public:
     }
 
     //! Construct a public key from a byte vector.
-    CPubKey(const std::vector<unsigned char>& _vch)
+    CPubKey(const std::vector<unsigned char>& vch)
     {
-        Set(_vch.begin(), _vch.end());
+        Set(vch.begin(), vch.end());
     }
 
     //! Simple read-only vector-like interface to the pubkey data.
@@ -116,15 +116,19 @@ public:
     }
 
     //! Implement serialization, as if this was a byte vector.
+    unsigned int GetSerializeSize(int nType, int nVersion) const
+    {
+        return size() + 1;
+    }
     template <typename Stream>
-    void Serialize(Stream& s) const
+    void Serialize(Stream& s, int nType, int nVersion) const
     {
         unsigned int len = size();
         ::WriteCompactSize(s, len);
         s.write((char*)vch, len);
     }
     template <typename Stream>
-    void Unserialize(Stream& s)
+    void Unserialize(Stream& s, int nType, int nVersion)
     {
         unsigned int len = ::ReadCompactSize(s);
         if (len <= 65) {
@@ -152,7 +156,7 @@ public:
 
     /*
      * Check syntactic correctness.
-     *
+     * 
      * Note that this is consensus critical as CheckSig() calls it!
      */
     bool IsValid() const
@@ -199,24 +203,20 @@ struct CExtPubKey {
 
     friend bool operator==(const CExtPubKey &a, const CExtPubKey &b)
     {
-        return a.nDepth == b.nDepth &&
-            memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], sizeof(vchFingerprint)) == 0 &&
-            a.nChild == b.nChild &&
-            a.chaincode == b.chaincode &&
-            a.pubkey == b.pubkey;
+        return a.nDepth == b.nDepth && memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], 4) == 0 && a.nChild == b.nChild &&
+               a.chaincode == b.chaincode && a.pubkey == b.pubkey;
     }
 
     void Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const;
     void Decode(const unsigned char code[BIP32_EXTKEY_SIZE]);
     bool Derive(CExtPubKey& out, unsigned int nChild) const;
 
-    void Serialize(CSizeComputer& s) const
+    unsigned int GetSerializeSize(int nType, int nVersion) const
     {
-        // Optimized implementation for ::GetSerializeSize that avoids copying.
-        s.seek(BIP32_EXTKEY_SIZE + 1); // add one byte for the size (compact int)
+        return BIP32_EXTKEY_SIZE+1; //add one byte for the size (compact int)
     }
     template <typename Stream>
-    void Serialize(Stream& s) const
+    void Serialize(Stream& s, int nType, int nVersion) const
     {
         unsigned int len = BIP32_EXTKEY_SIZE;
         ::WriteCompactSize(s, len);
@@ -225,7 +225,7 @@ struct CExtPubKey {
         s.write((const char *)&code[0], len);
     }
     template <typename Stream>
-    void Unserialize(Stream& s)
+    void Unserialize(Stream& s, int nType, int nVersion)
     {
         unsigned int len = ::ReadCompactSize(s);
         unsigned char code[BIP32_EXTKEY_SIZE];
@@ -247,4 +247,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // BITCOIN_PUBKEY_H
+#endif // UTABIT_PUBKEY_H
