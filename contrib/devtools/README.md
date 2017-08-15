@@ -34,11 +34,11 @@ source files if these have a git commit from the current year.
 
 For example a file changed in 2015 (with 2015 being the current year):
 
-```// Copyright (c) 2009-2013 The Bitcoin Core developers```
+```// Copyright (c) 2009-2013 The Utabit Core developers```
 
 would be changed to:
 
-```// Copyright (c) 2009-2015 The Bitcoin Core developers```
+```// Copyright (c) 2009-2015 The Utabit Core developers```
 
 git-subtree-check.sh
 ====================
@@ -49,7 +49,7 @@ the commit it claims to have been updated to.
 To use, make sure that you have fetched the upstream repository branch in which the subtree is
 maintained:
 * for `src/secp256k1`: https://github.com/bitcoin-core/secp256k1.git (branch master)
-* for `src/leveldb`: https://github.com/bitcoin-core/leveldb.git (branch bitcoin-fork)
+* for `src/leveldb`: https://github.com/bitcoin-core/leveldb.git (branch utabit-fork)
 * for `src/univalue`: https://github.com/bitcoin-core/univalue.git (branch master)
 * for `src/crypto/ctaes`: https://github.com/bitcoin-core/ctaes.git (branch master)
 
@@ -67,7 +67,7 @@ For example:
   ./github-merge.py 3077
 
 (in any git repository) will help you merge pull request #3077 for the
-bitcoin/bitcoin repository.
+utabit/utabit repository.
 
 What it does:
 * Fetch master and the pull request.
@@ -85,16 +85,16 @@ couldn't mess with the sources.
 
 Setup
 ---------
-Configuring the github-merge tool for the bitcoin repository is done in the following way:
+Configuring the github-merge tool for the utabit repository is done in the following way:
 
-    git config githubmerge.repository bitcoin/bitcoin
+    git config githubmerge.repository utabit/utabit
     git config githubmerge.testcmd "make -j4 check" (adapt to whatever you want to use for testing)
     git config --global user.signingkey mykeyid (if you want to GPG sign)
 
 optimize-pngs.py
 ================
 
-A script to optimize png files in the bitcoin
+A script to optimize png files in the utabit
 repository (requires pngcrush).
 
 security-check.py and test-security-check.py
@@ -117,10 +117,10 @@ If only supported symbols are used the return value will be 0 and the output wil
 
 If there are 'unsupported' symbols, the return value will be 1 a list like this will be printed:
 
-    .../64/test_bitcoin: symbol memcpy from unsupported version GLIBC_2.14
-    .../64/test_bitcoin: symbol __fdelt_chk from unsupported version GLIBC_2.15
-    .../64/test_bitcoin: symbol std::out_of_range::~out_of_range() from unsupported version GLIBCXX_3.4.15
-    .../64/test_bitcoin: symbol _ZNSt8__detail15_List_nod from unsupported version GLIBCXX_3.4.15
+    .../64/test_utabit: symbol memcpy from unsupported version GLIBC_2.14
+    .../64/test_utabit: symbol __fdelt_chk from unsupported version GLIBC_2.15
+    .../64/test_utabit: symbol std::out_of_range::~out_of_range() from unsupported version GLIBCXX_3.4.15
+    .../64/test_utabit: symbol _ZNSt8__detail15_List_nod from unsupported version GLIBCXX_3.4.15
 
 update-translations.py
 ======================

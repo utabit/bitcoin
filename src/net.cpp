@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/utabit-config.h"
 #endif
 
 #include "net.h"
@@ -179,7 +179,7 @@ static std::vector<CAddress> convertSeed6(const std::vector<SeedSpec6> &vSeedsIn
 // one by discovery.
 CAddress GetLocalAddress(const CNetAddr *paddrPeer)
 {
-    CAddress ret(CService("0.0.0.0",GetListenPort()), nLocalServices);
+    CAddress ret(CService("0.0.0.0",GetListenPort()), NODE_NONE);
     CService addr;
     if (GetLocal(addr, paddrPeer))
     {
@@ -711,7 +711,7 @@ void CNode::copyStats(CNodeStats &stats)
         nPingUsecWait = GetTimeMicros() - nPingUsecStart;
     }
 
-    // Raw ping time is in microseconds, but show it to user as whole seconds (Bitcoin users should be well used to small numbers with many decimal places by now :)
+    // Raw ping time is in microseconds, but show it to user as whole seconds (Utabit users should be well used to small numbers with many decimal places by now :)
     stats.dPingTime = (((double)nPingUsecTime) / 1e6);
     stats.dPingMin  = (((double)nMinPingUsecTime) / 1e6);
     stats.dPingWait = (((double)nPingUsecWait) / 1e6);
@@ -1409,7 +1409,7 @@ void ThreadMapPort()
             }
         }
 
-        std::string strDesc = "Bitcoin " + FormatFullVersion();
+        std::string strDesc = "Utabit " + FormatFullVersion();
 
         try {
             while (true) {

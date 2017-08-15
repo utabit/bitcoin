@@ -51,7 +51,7 @@
 using namespace std;
 
 #if defined(NDEBUG)
-# error "Bitcoin cannot be compiled without assertions."
+# error "Utabit cannot be compiled without assertions."
 #endif
 
 /**
@@ -116,7 +116,7 @@ static void CheckBlockIndex(const Consensus::Params& consensusParams);
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Bitcoin Signed Message:\n";
+const string strMessageMagic = "Utabit Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -1555,7 +1555,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
         // Remove conflicting transactions from the mempool
         BOOST_FOREACH(const CTxMemPool::txiter it, allConflicting)
         {
-            LogPrint("mempool", "replacing tx %s with %s for %s BTC additional fees, %d delta bytes\n",
+            LogPrint("mempool", "replacing tx %s with %s for %s UBIT additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -1726,7 +1726,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 50 * COIN;
+    CAmount nSubsidy = 512 * COIN;
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
     return nSubsidy;
@@ -1734,6 +1734,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 bool IsInitialBlockDownload()
 {
+	return false;
     const CChainParams& chainParams = Params();
 
     // Once this function has returned false, it must remain false.
@@ -2268,7 +2269,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("bitcoin-scriptch");
+    RenameThread("utabit-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -5563,7 +5564,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                         if (orphanTx.wit.IsNull() && !stateDummy.CorruptionPossible()) {
                             // Do not use rejection cache for witness transactions or
                             // witness-stripped transactions, as they can have been malleated.
-                            // See https://github.com/bitcoin/bitcoin/issues/8279 for details.
+                            // See https://github.com/utabit/utabit/issues/8279 for details.
                             assert(recentRejects);
                             recentRejects->insert(orphanHash);
                         }
@@ -5605,7 +5606,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             if (tx.wit.IsNull() && !state.CorruptionPossible()) {
                 // Do not use rejection cache for witness transactions or
                 // witness-stripped transactions, as they can have been malleated.
-                // See https://github.com/bitcoin/bitcoin/issues/8279 for details.
+                // See https://github.com/utabit/utabit/issues/8279 for details.
                 assert(recentRejects);
                 recentRejects->insert(tx.GetHash());
             }

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_SENDCOINSDIALOG_H
-#define BITCOIN_QT_SENDCOINSDIALOG_H
+#ifndef UTABIT_QT_SENDCOINSDIALOG_H
+#define UTABIT_QT_SENDCOINSDIALOG_H
 
 #include "walletmodel.h"
 
@@ -28,7 +28,7 @@ QT_END_NAMESPACE
 
 const int defaultConfirmTarget = 25;
 
-/** Dialog for sending bitcoins */
+/** Dialog for sending utabits */
 class SendCoinsDialog : public QDialog
 {
     Q_OBJECT
@@ -122,4 +122,4 @@ private:
     int secDelay;
 };
 
-#endif // BITCOIN_QT_SENDCOINSDIALOG_H
+#endif // UTABIT_QT_SENDCOINSDIALOG_H

@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_WALLETDB_H
-#define BITCOIN_WALLET_WALLETDB_H
+#ifndef UTABIT_WALLET_WALLETDB_H
+#define UTABIT_WALLET_WALLETDB_H
 
 #include "amount.h"
 #include "primitives/transaction.h"
@@ -187,4 +187,4 @@ private:
 
 void ThreadFlushWalletDB(const std::string& strFile);
 
-#endif // BITCOIN_WALLET_WALLETDB_H
+#endif // UTABIT_WALLET_WALLETDB_H

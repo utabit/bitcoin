@@ -27,7 +27,8 @@ namespace Checkpoints {
 
     //! Guess how far we are in the verification process at the given block index
     double GuessVerificationProgress(const CCheckpointData& data, CBlockIndex *pindex, bool fSigchecks) {
-        if (pindex==NULL)
+	return 1.0 ; 
+       /* if (pindex==NULL)
             return 0.0;
 
         int64_t nNow = time(NULL);
@@ -53,11 +54,14 @@ namespace Checkpoints {
         }
 
         return fWorkBefore / (fWorkBefore + fWorkAfter);
+*/
     }
 
     CBlockIndex* GetLastCheckpoint(const CCheckpointData& data)
     {
-        const MapCheckpoints& checkpoints = data.mapCheckpoints;
+ 	return NULL; 
+/*     
+ 	const MapCheckpoints& checkpoints = data.mapCheckpoints;
 
         BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, checkpoints)
         {
@@ -66,7 +70,7 @@ namespace Checkpoints {
             if (t != mapBlockIndex.end())
                 return t->second;
         }
-        return NULL;
+        return NULL;*/
     }
 
 } // namespace Checkpoints

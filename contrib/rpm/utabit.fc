@@ -1,0 +1,8 @@
+/usr/bin/utabit-cli		--	gen_context(system_u:object_r:utabit_exec_t,s0)
+/usr/sbin/utabitd		--	gen_context(system_u:object_r:utabit_exec_t,s0)
+/usr/lib(64)?/utabit/utabitd		--	gen_context(system_u:object_r:utabit_exec_t,s0)
+
+/etc/utabit(/.*)?		gen_context(system_u:object_r:utabit_conf_t,s0)
+/var/lib/utabit(/.*)?		gen_context(system_u:object_r:utabit_var_lib_t,s0)
+
+(/var)?/run/utabitd(/.*)?   gen_context(system_u:object_r:utabit_var_run_t,s0)

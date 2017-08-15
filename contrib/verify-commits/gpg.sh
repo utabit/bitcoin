@@ -1,5 +1,6 @@
 #!/bin/sh
 # Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2016-2017 The Utabit Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +17,7 @@ for LINE in $(echo "$INPUT" | gpg --trust-model always "$@" 2>/dev/null); do
 		done < ./contrib/verify-commits/trusted-keys
 		;;
 	"[GNUPG:] REVKEYSIG "*)
-		[ "$BITCOIN_VERIFY_COMMITS_ALLOW_REVSIG" != 1 ] && exit 1
+		[ "$UTABIT_VERIFY_COMMITS_ALLOW_REVSIG" != 1 ] && exit 1
 		while read KEY; do
 			case "$LINE" in "[GNUPG:] REVKEYSIG ${KEY#????????????????????????} "*)
 				REVSIG=true

@@ -1,0 +1,33 @@
+# /etc/conf.d/utabitd: config file for /etc/init.d/utabitd
+
+# Config file location
+#UTABITD_CONFIGFILE="/etc/utabit/utabit.conf"
+
+# What directory to write pidfile to?  (created and owned by $UTABITD_USER)
+#UTABITD_PIDDIR="/var/run/utabitd"
+
+# What filename to give the pidfile
+#UTABITD_PIDFILE="${UTABITD_PIDDIR}/utabitd.pid"
+
+# Where to write utabitd data (be mindful that the blockchain is large)
+#UTABITD_DATADIR="/var/lib/utabitd"
+
+# User and group to own utabitd process
+#UTABITD_USER="utabit"
+#UTABITD_GROUP="utabit"
+
+# Path to utabitd executable
+#UTABITD_BIN="/usr/bin/utabitd"
+
+# Nice value to run utabitd under
+#UTABITD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+UTABITD_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for utabitd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+UTABITD_SIGTERM_TIMEOUT=60
