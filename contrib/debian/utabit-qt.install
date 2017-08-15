@@ -1,0 +1,6 @@
+usr/local/bin/utabit-qt usr/bin
+share/pixmaps/utabit32.xpm usr/share/pixmaps
+share/pixmaps/utabit16.xpm usr/share/pixmaps
+share/pixmaps/utabit128.png usr/share/pixmaps
+debian/utabit-qt.desktop usr/share/applications
+debian/utabit-qt.protocol usr/share/kde4/services/

@@ -20,13 +20,13 @@ EXCLUDE = [
     'src/secp256k1/include/secp256k1_ecdh.h',
     'src/secp256k1/include/secp256k1_recovery.h',
     'src/secp256k1/include/secp256k1_schnorr.h',
-    'src/secp256k1/src/java/org_bitcoin_NativeSecp256k1.c',
-    'src/secp256k1/src/java/org_bitcoin_NativeSecp256k1.h',
-    'src/secp256k1/src/java/org_bitcoin_Secp256k1Context.c',
-    'src/secp256k1/src/java/org_bitcoin_Secp256k1Context.h',
+    'src/secp256k1/src/java/org_utabit_NativeSecp256k1.c',
+    'src/secp256k1/src/java/org_utabit_NativeSecp256k1.h',
+    'src/secp256k1/src/java/org_utabit_Secp256k1Context.c',
+    'src/secp256k1/src/java/org_utabit_Secp256k1Context.h',
     # auto generated:
     'src/univalue/lib/univalue_escapes.h',
-    'src/qt/bitcoinstrings.cpp',
+    'src/qt/utabitstrings.cpp',
     'src/chainparamsseeds.h',
     # other external copyrights:
     'src/tinyformat.h',
@@ -83,11 +83,11 @@ def compile_copyright_regex(copyright_style, year_style, name):
 
 EXPECTED_HOLDER_NAMES = [
     "Satoshi Nakamoto\n",
-    "The Bitcoin Core developers\n",
-    "The Bitcoin Core developers \n",
-    "Bitcoin Core Developers\n",
-    "the Bitcoin Core developers\n",
-    "The Bitcoin developers\n",
+    "The Utabit Core developers\n",
+    "The Utabit Core developers \n",
+    "Utabit Core Developers\n",
+    "the Utabit Core developers\n",
+    "The Utabit developers\n",
     "The LevelDB Authors\. All rights reserved\.\n",
     "BitPay Inc\.\n",
     "BitPay, Inc\.\n",
@@ -277,7 +277,7 @@ Usage:
     $ ./copyright_header.py report <base_directory> [verbose]
 
 Arguments:
-    <base_directory> - The base directory of a bitcoin source code repository.
+    <base_directory> - The base directory of a utabit source code repository.
     [verbose] - Includes a list of every file of each subcategory in the report.
 """
 
@@ -340,7 +340,7 @@ def write_file_lines(filename, file_lines):
 COPYRIGHT = 'Copyright \(c\)'
 YEAR = "20[0-9][0-9]"
 YEAR_RANGE = '(%s)(-%s)?' % (YEAR, YEAR)
-HOLDER = 'The Bitcoin Core developers'
+HOLDER = 'The Utabit Core developers'
 UPDATEABLE_LINE_COMPILED = re.compile(' '.join([COPYRIGHT, YEAR_RANGE, HOLDER]))
 
 def get_updatable_copyright_line(file_lines):
@@ -408,7 +408,7 @@ def exec_update_header_year(base_directory):
 ################################################################################
 
 UPDATE_USAGE = """
-Updates all the copyright headers of "The Bitcoin Core developers" which were
+Updates all the copyright headers of "The Utabit Core developers" which were
 changed in a year more recent than is listed. For example:
 
 // Copyright (c) <firstYear>-<lastYear> The Bitcoin Core developers
@@ -433,7 +433,7 @@ Usage:
     $ ./copyright_header.py update <base_directory>
 
 Arguments:
-    <base_directory> - The base directory of a bitcoin source code repository.
+    <base_directory> - The base directory of a utabit source code repository.
 """
 
 def print_file_action_message(filename, action):
@@ -534,7 +534,7 @@ def exec_insert_header(filename, style):
 ################################################################################
 
 INSERT_USAGE = """
-Inserts a copyright header for "The Bitcoin Core developers" at the top of the
+Inserts a copyright header for "The Utabit Core developers" at the top of the
 file in either Python or C++ style as determined by the file extension. If the
 file is a Python file and it has a '#!' starting the first line, the header is
 inserted in the line below it.
@@ -548,14 +548,14 @@ where <year_introduced> is according to the 'git log' history. If
 
 "<current_year>"
 
-If the file already has a copyright for "The Bitcoin Core developers", the
+If the file already has a copyright for "The Utabit Core developers", the
 script will exit.
 
 Usage:
     $ ./copyright_header.py insert <file>
 
 Arguments:
-    <file> - A source file in the bitcoin repository.
+    <file> - A source file in the utabit repository.
 """
 
 def insert_cmd(argv):
@@ -580,7 +580,7 @@ def insert_cmd(argv):
 ################################################################################
 
 USAGE = """
-copyright_header.py - utilities for managing copyright headers of 'The Bitcoin
+copyright_header.py - utilities for managing copyright headers of 'The Utabit
 Core developers' in repository source files.
 
 Usage:

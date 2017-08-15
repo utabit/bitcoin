@@ -5,14 +5,14 @@
 
 # Test descendant package tracking code
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 from test_framework.util import *
 from test_framework.mininode import COIN
 
 MAX_ANCESTORS = 25
 MAX_DESCENDANTS = 25
 
-class MempoolPackagesTest(BitcoinTestFramework):
+class MempoolPackagesTest(UtabitTestFramework):
     def __init__(self):
         super().__init__()
         self.num_nodes = 2

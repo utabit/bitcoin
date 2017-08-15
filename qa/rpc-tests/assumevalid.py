@@ -6,7 +6,7 @@
 assumevalid.py
 
 Test logic for skipping signature validation on blocks which we've assumed
-valid (https://github.com/bitcoin/bitcoin/pull/9484)
+valid (https://github.com/utabit/utabit/pull/9484)
 
 We build a chain that includes and invalid signature for one of the
 transactions:
@@ -32,7 +32,7 @@ Start three nodes:
 '''
 
 from test_framework.mininode import *
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 from test_framework.util import *
 from test_framework.blocktools import create_block, create_coinbase
 from test_framework.key import CECKey
@@ -63,7 +63,7 @@ class BaseNode(SingleNodeConnCB):
         headers_message.headers = [ CBlockHeader(b) for b in new_blocks ]
         self.send_message(headers_message)
 
-class SendHeadersTest(BitcoinTestFramework):
+class SendHeadersTest(UtabitTestFramework):
     def __init__(self):
         super().__init__()
         self.setup_clean_chain = True

@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 from segwit import send_to_witness
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 from test_framework import blocktools
 from test_framework.mininode import CTransaction
 from test_framework.util import *
@@ -20,7 +20,7 @@ WALLET_PASSPHRASE = "test"
 WALLET_PASSPHRASE_TIMEOUT = 3600
 
 
-class BumpFeeTest(BitcoinTestFramework):
+class BumpFeeTest(UtabitTestFramework):
     def __init__(self):
         super().__init__()
         self.num_nodes = 2
@@ -33,7 +33,7 @@ class BumpFeeTest(BitcoinTestFramework):
 
         # Encrypt wallet for test_locked_wallet_fails test
         self.nodes[1].encryptwallet(WALLET_PASSPHRASE)
-        bitcoind_processes[1].wait()
+        utabitd_processes[1].wait()
         self.nodes[1] = start_node(1, self.options.tmpdir, extra_args[1])
         self.nodes[1].walletpassphrase(WALLET_PASSPHRASE, WALLET_PASSPHRASE_TIMEOUT)
 
@@ -45,7 +45,7 @@ class BumpFeeTest(BitcoinTestFramework):
         peer_node, rbf_node = self.nodes
         rbf_node_address = rbf_node.getnewaddress()
 
-        # fund rbf node with 10 coins of 0.001 btc (100,000 satoshis)
+        # fund rbf node with 10 coins of 0.001 ubit (100,000 satoshis)
         print("Mining blocks...")
         peer_node.generate(110)
         self.sync_all()

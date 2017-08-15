@@ -47,7 +47,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Bitcoin cannot be compiled without assertions."
+# error "Utabit cannot be compiled without assertions."
 #endif
 
 /**
@@ -88,7 +88,7 @@ static void CheckBlockIndex(const Consensus::Params& consensusParams);
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Bitcoin Signed Message:\n";
+const std::string strMessageMagic = "Utabit Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -980,7 +980,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
         // Remove conflicting transactions from the mempool
         BOOST_FOREACH(const CTxMemPool::txiter it, allConflicting)
         {
-            LogPrint("mempool", "replacing tx %s with %s for %s BTC additional fees, %d delta bytes\n",
+            LogPrint("mempool", "replacing tx %s with %s for %s UBIT additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -1170,7 +1170,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 50 * COIN;
+    CAmount nSubsidy = 512 * COIN;
     // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
     return nSubsidy;
@@ -1178,26 +1178,6 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 bool IsInitialBlockDownload()
 {
-    const CChainParams& chainParams = Params();
-
-    // Once this function has returned false, it must remain false.
-    static std::atomic<bool> latchToFalse{false};
-    // Optimization: pre-test latch before taking the lock.
-    if (latchToFalse.load(std::memory_order_relaxed))
-        return false;
-
-    LOCK(cs_main);
-    if (latchToFalse.load(std::memory_order_relaxed))
-        return false;
-    if (fImporting || fReindex)
-        return true;
-    if (chainActive.Tip() == NULL)
-        return true;
-    if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork))
-        return true;
-    if (chainActive.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
-        return true;
-    latchToFalse.store(true, std::memory_order_relaxed);
     return false;
 }
 
@@ -1678,7 +1658,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("bitcoin-scriptch");
+    RenameThread("utabit-scriptch");
     scriptcheckqueue.Thread();
 }
 

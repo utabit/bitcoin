@@ -7,12 +7,12 @@
 # Test ZMQ interface
 #
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 from test_framework.util import *
 import zmq
 import struct
 
-class ZMQTest (BitcoinTestFramework):
+class ZMQTest (UtabitTestFramework):
 
     def __init__(self):
         super().__init__()

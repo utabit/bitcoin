@@ -1,0 +1,22 @@
+[Unit]
+Description=Utabit's distributed currency daemon
+After=network.target
+
+[Service]
+User=utabit
+Group=utabit
+
+Type=forking
+PIDFile=/var/lib/utabitd/utabitd.pid
+ExecStart=/usr/bin/utabitd -daemon -pid=/var/lib/utabitd/utabitd.pid \
+-conf=/etc/utabit/utabit.conf -datadir=/var/lib/utabitd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

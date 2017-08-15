@@ -2,10 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_TEST_FIXTURE_H
-#define BITCOIN_WALLET_TEST_FIXTURE_H
+#ifndef UTABIT_WALLET_TEST_FIXTURE_H
+#define UTABIT_WALLET_TEST_FIXTURE_H
 
-#include "test/test_bitcoin.h"
+#include "test/test_utabit.h"
 
 /** Testing setup and teardown for wallet.
  */

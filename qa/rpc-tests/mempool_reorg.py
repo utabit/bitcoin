@@ -8,11 +8,11 @@
 # that spend (directly or indirectly) coinbase transactions.
 #
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 from test_framework.util import *
 
 # Create one-input, one-output, no-fee transaction:
-class MempoolCoinbaseTest(BitcoinTestFramework):
+class MempoolCoinbaseTest(UtabitTestFramework):
     def __init__(self):
         super().__init__()
         self.num_nodes = 2

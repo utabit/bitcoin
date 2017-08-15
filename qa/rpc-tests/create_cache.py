@@ -5,12 +5,12 @@
 
 #
 # Helper script to create the cache
-# (see BitcoinTestFramework.setup_chain)
+# (see UtabitTestFramework.setup_chain)
 #
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import UtabitTestFramework
 
-class CreateCache(BitcoinTestFramework):
+class CreateCache(UtabitTestFramework):
 
     def __init__(self):
         super().__init__()

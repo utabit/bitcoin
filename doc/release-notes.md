@@ -1,22 +1,22 @@
-Bitcoin Core version 0.14.2 is now available from:
+Utabit Core version 0.14.2 is now available from:
 
-  <https://bitcoin.org/bin/bitcoin-core-0.14.2/>
+  <https://utabit.org/bin/utabit-core-0.14.2/>
 
 This is a new minor version release, including various bugfixes and
 performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/bitcoin/bitcoin/issues>
+  <https://github.com/utabit/utabit/issues>
 
 To receive security and update notifications, please subscribe to:
 
-  <https://bitcoincore.org/en/list/announcements/join/>
+  <https://utabitcore.org/en/list/announcements/join/>
 
 Compatibility
 ==============
 
-Bitcoin Core is extensively tested on multiple operating systems using
+Utabit Core is extensively tested on multiple operating systems using
 the Linux kernel, macOS 10.8+, and Windows Vista and later.
 
 Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
@@ -24,7 +24,7 @@ No attempt is made to prevent installing or running the software on Windows XP, 
 can still do so at your own risk but be aware that there are known instabilities and issues.
 Please do not report issues about Windows XP to the issue tracker.
 
-Bitcoin Core should also work on most other Unix-like systems but is not
+Utabit Core should also work on most other Unix-like systems but is not
 frequently tested on them.
 
 Notable changes
@@ -46,13 +46,13 @@ Low-level RPC changes
   or subnet is invalid. Previously returned RPC_CLIENT_NODE_ALREADY_ADDED.
   - `setban` now returns RPC_CLIENT_INVALID_IP_OR_SUBNET if the user tries to unban
   a node that has not previously been banned. Previously returned RPC_MISC_ERROR.
-  - `removeprunedfunds` now returns RPC_WALLET_ERROR if bitcoind is unable to remove
+  - `removeprunedfunds` now returns RPC_WALLET_ERROR if utabitd is unable to remove
   the transaction. Previously returned RPC_INTERNAL_ERROR.
   - `removeprunedfunds` now returns RPC_INVALID_PARAMETER if the transaction does not
   exist in the wallet. Previously returned RPC_INTERNAL_ERROR.
   - `fundrawtransaction` now returns RPC_INVALID_ADDRESS_OR_KEY if an invalid change
   address is provided. Previously returned RPC_INVALID_PARAMETER.
-  - `fundrawtransaction` now returns RPC_WALLET_ERROR if bitcoind is unable to create
+  - `fundrawtransaction` now returns RPC_WALLET_ERROR if utabitd is unable to create
   the transaction. The error message provides further details. Previously returned
   RPC_INTERNAL_ERROR.
   - `bumpfee` now returns RPC_INVALID_PARAMETER if the provided transaction has
@@ -89,7 +89,7 @@ other impact.
 
 This only affects users that have explicitly enabled UPnP through the GUI
 setting or through the `-upnp` option, as since the last UPnP vulnerability
-(in Bitcoin Core 0.10.3) it has been disabled by default.
+(in Utabit Core 0.10.3) it has been disabled by default.
 
 If you use this option, it is recommended to upgrade to this version as soon as
 possible.
@@ -97,7 +97,7 @@ possible.
 Known Bugs
 ==========
 
-Since 0.14.0 the approximate transaction fee shown in Bitcoin-Qt when using coin
+Since 0.14.0 the approximate transaction fee shown in Utabit-Qt when using coin
 control and smart fee estimation does not reflect any change in target from the
 smart fee slider. It will only present an approximate fee calculated using the
 default target. The fee calculated using the correct target is still applied to
@@ -120,7 +120,7 @@ git merge commit are mentioned.
 
 ### Build system
 - #10414 `ffb0c4b` miniupnpc 2.0.20170509 (fanquake)
-- #10228 `ae479bc` Regenerate bitcoin-config.h as necessary (theuni)
+- #10228 `ae479bc` Regenerate utabit-config.h as necessary (theuni)
 
 ### Miscellaneous
 - #10245 `44a17f2` Minor fix in build documentation for FreeBSD 11 (shigeya)
@@ -147,5 +147,5 @@ Thanks to everyone who directly contributed to this release:
 - Shigeya Suzuki
 - Wladimir J. van der Laan
 
-As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/bitcoin/).
+As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/utabit/).
 
