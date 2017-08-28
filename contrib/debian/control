@@ -23,7 +23,7 @@ Build-Depends: debhelper,
  libprotobuf-dev, protobuf-compiler,
  python
 Standards-Version: 3.9.2
-Homepage: https://utabit.com/
+Homepage: https://utabitcore.org/
 Vcs-Git: git://github.com/utabit/utabit.git
 Vcs-Browser: https://github.com/utabit/utabit
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -239,8 +239,6 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
         else if (status.depth == 0)
         {
             status.status = TransactionStatus::Unconfirmed;
-            if (wtx.isAbandoned())
-                status.status = TransactionStatus::Abandoned;
         }
         else if (status.depth < RecommendedNumConfirmations)
         {
@@ -262,10 +260,11 @@ bool TransactionRecord::statusUpdateNeeded()
 
 QString TransactionRecord::getTxID() const
 {
-    return QString::fromStdString(hash.ToString());
+    return formatSubTxId(hash, idx);
 }
 
-int TransactionRecord::getOutputIndex() const
+QString TransactionRecord::formatSubTxId(const uint256 &hash, int vout)
 {
-    return idx;
+    return QString::fromStdString(hash.ToString() + strprintf("-%03d", vout));
 }
+

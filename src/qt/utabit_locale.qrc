@@ -6,6 +6,7 @@
         <file alias="be_BY">locale/utabit_be_BY.qm</file>
         <file alias="bg_BG">locale/utabit_bg_BG.qm</file>
         <file alias="bg">locale/utabit_bg.qm</file>
+        <file alias="bs">locale/utabit_bs.qm</file>
         <file alias="ca_ES">locale/utabit_ca_ES.qm</file>
         <file alias="ca">locale/utabit_ca.qm</file>
         <file alias="ca@valencia">locale/utabit_ca@valencia.qm</file>
@@ -42,13 +43,11 @@
         <file alias="hr">locale/utabit_hr.qm</file>
         <file alias="hu">locale/utabit_hu.qm</file>
         <file alias="id_ID">locale/utabit_id_ID.qm</file>
-        <file alias="it_IT">locale/utabit_it_IT.qm</file>
         <file alias="it">locale/utabit_it.qm</file>
         <file alias="ja">locale/utabit_ja.qm</file>
         <file alias="ka">locale/utabit_ka.qm</file>
         <file alias="kk_KZ">locale/utabit_kk_KZ.qm</file>
         <file alias="ko_KR">locale/utabit_ko_KR.qm</file>
-        <file alias="ku_IQ">locale/utabit_ku_IQ.qm</file>
         <file alias="ky">locale/utabit_ky.qm</file>
         <file alias="la">locale/utabit_la.qm</file>
         <file alias="lt">locale/utabit_lt.qm</file>
@@ -57,7 +56,6 @@
         <file alias="mn">locale/utabit_mn.qm</file>
         <file alias="ms_MY">locale/utabit_ms_MY.qm</file>
         <file alias="nb">locale/utabit_nb.qm</file>
-        <file alias="ne">locale/utabit_ne.qm</file>
         <file alias="nl">locale/utabit_nl.qm</file>
         <file alias="pam">locale/utabit_pam.qm</file>
         <file alias="pl">locale/utabit_pl.qm</file>
@@ -70,7 +68,6 @@
         <file alias="sk">locale/utabit_sk.qm</file>
         <file alias="sl_SI">locale/utabit_sl_SI.qm</file>
         <file alias="sq">locale/utabit_sq.qm</file>
-        <file alias="sr@latin">locale/utabit_sr@latin.qm</file>
         <file alias="sr">locale/utabit_sr.qm</file>
         <file alias="sv">locale/utabit_sv.qm</file>
         <file alias="ta">locale/utabit_ta.qm</file>
@@ -80,10 +77,10 @@
         <file alias="uk">locale/utabit_uk.qm</file>
         <file alias="ur_PK">locale/utabit_ur_PK.qm</file>
         <file alias="uz@Cyrl">locale/utabit_uz@Cyrl.qm</file>
+        <file alias="uz@Latn">locale/utabit_uz@Latn.qm</file>
         <file alias="vi">locale/utabit_vi.qm</file>
         <file alias="vi_VN">locale/utabit_vi_VN.qm</file>
         <file alias="zh_CN">locale/utabit_zh_CN.qm</file>
-        <file alias="zh_HK">locale/utabit_zh_HK.qm</file>
         <file alias="zh">locale/utabit_zh.qm</file>
         <file alias="zh_TW">locale/utabit_zh_TW.qm</file>
     </qresource>

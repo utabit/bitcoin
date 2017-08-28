@@ -1,4 +1,4 @@
-Utabit Core 0.13.2
+Utabit Core 0.12.1
 =====================
 
 Intro

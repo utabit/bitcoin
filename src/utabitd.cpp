@@ -1,22 +1,18 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#if defined(HAVE_CONFIG_H)
-#include "config/utabit-config.h"
-#endif
-
 #include "chainparams.h"
 #include "clientversion.h"
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "init.h"
 #include "noui.h"
 #include "scheduler.h"
 #include "util.h"
 #include "httpserver.h"
 #include "httprpc.h"
-#include "utilstrencodings.h"
+#include "rpcserver.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -78,22 +74,22 @@ bool AppInit(int argc, char* argv[])
     // Process help and version before taking care about datadir
     if (mapArgs.count("-?") || mapArgs.count("-h") ||  mapArgs.count("-help") || mapArgs.count("-version"))
     {
-        std::string strUsage = strprintf(_("%s Daemon"), _(PACKAGE_NAME)) + " " + _("version") + " " + FormatFullVersion() + "\n";
+        std::string strUsage = _("Utabit Core Daemon") + " " + _("version") + " " + FormatFullVersion() + "\n";
 
         if (mapArgs.count("-version"))
         {
-            strUsage += FormatParagraph(LicenseInfo());
+            strUsage += LicenseInfo();
         }
         else
         {
             strUsage += "\n" + _("Usage:") + "\n" +
-                  "  utabitd [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
+                  "  utabitd [options]                     " + _("Start Utabit Core Daemon") + "\n";
 
             strUsage += "\n" + HelpMessage(HMM_UTABITD);
         }
 
         fprintf(stdout, "%s", strUsage.c_str());
-        return true;
+        return false;
     }
 
     try
@@ -127,7 +123,7 @@ bool AppInit(int argc, char* argv[])
         if (fCommandLine)
         {
             fprintf(stderr, "Error: There is no RPC client functionality in utabitd anymore. Use the utabit-cli utility instead.\n");
-            exit(EXIT_FAILURE);
+            exit(1);
         }
 #ifndef WIN32
         fDaemon = GetBoolArg("-daemon", false);
@@ -187,5 +183,5 @@ int main(int argc, char* argv[])
     // Connect utabitd signal handlers
     noui_connect();
 
-    return (AppInit(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE);
+    return (AppInit(argc, argv) ? 0 : 1);
 }

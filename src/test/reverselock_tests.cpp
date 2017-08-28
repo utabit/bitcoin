@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Bitcoin Core developers
+// Copyright (c) 2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,18 +42,22 @@ BOOST_AUTO_TEST_CASE(reverselock_errors)
     BOOST_CHECK(failed);
     BOOST_CHECK(!lock.owns_lock());
 
-    // Locking the original lock after it has been taken by a reverse lock
-    // makes no sense. Ensure that the original lock no longer owns the lock
-    // after giving it to a reverse one.
+    // Make sure trying to lock a lock after it has been reverse locked fails
+    failed = false;
+    bool locked = false;
 
     lock.lock();
     BOOST_CHECK(lock.owns_lock());
-    {
+
+    try {
         reverse_lock<boost::unique_lock<boost::mutex> > rlock(lock);
-        BOOST_CHECK(!lock.owns_lock());
+        lock.lock();
+        locked = true;
+    } catch(...) {
+        failed = true;
     }
 
-    BOOST_CHECK(failed);
+    BOOST_CHECK(locked && failed);
     BOOST_CHECK(lock.owns_lock());
 }
 

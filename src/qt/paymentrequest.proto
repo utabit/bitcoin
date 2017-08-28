@@ -6,8 +6,6 @@
 // https://en.utabit.it/wiki/Payment_Request
 //
 
-syntax = "proto2";
-
 package payments;
 option java_package = "org.utabit.protocols.payments";
 option java_outer_classname = "Protos";

@@ -1,13 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
-// Copyright (c) 2016-2017 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef UTABIT_UTABITCONSENSUS_H
 #define UTABIT_UTABITCONSENSUS_H
-
-#include <stdint.h>
 
 #if defined(BUILD_UTABIT_INTERNAL) && defined(HAVE_CONFIG_H)
 #include "config/utabit-config.h"
@@ -34,7 +31,7 @@
 extern "C" {
 #endif
 
-#define UTABITCONSENSUS_API_VER 1
+#define UTABITCONSENSUS_API_VER 0
 
 typedef enum utabitconsensus_error_t
 {
@@ -42,7 +39,6 @@ typedef enum utabitconsensus_error_t
     utabitconsensus_ERR_TX_INDEX,
     utabitconsensus_ERR_TX_SIZE_MISMATCH,
     utabitconsensus_ERR_TX_DESERIALIZE,
-    utabitconsensus_ERR_AMOUNT_REQUIRED,
 } utabitconsensus_error;
 
 /** Script verification flags */
@@ -51,10 +47,7 @@ enum
     utabitconsensus_SCRIPT_FLAGS_VERIFY_NONE                = 0,
     utabitconsensus_SCRIPT_FLAGS_VERIFY_P2SH                = (1U << 0), // evaluate P2SH (BIP16) subscripts
     utabitconsensus_SCRIPT_FLAGS_VERIFY_DERSIG              = (1U << 2), // enforce strict DER (BIP66) compliance
-    utabitconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY           = (1U << 4), // enforce NULLDUMMY (BIP147)
     utabitconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9), // enable CHECKLOCKTIMEVERIFY (BIP65)
-    utabitconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY = (1U << 10), // enable CHECKSEQUENCEVERIFY (BIP112)
-    utabitconsensus_SCRIPT_FLAGS_VERIFY_WITNESS             = (1U << 11), // enable WITNESS (BIP141)
 };
 
 /// Returns 1 if the input nIn of the serialized transaction pointed to by
@@ -62,10 +55,6 @@ enum
 /// the additional constraints specified by flags.
 /// If not NULL, err will contain an error/success code for the operation
 EXPORT_SYMBOL int utabitconsensus_verify_script(const unsigned char *scriptPubKey, unsigned int scriptPubKeyLen,
-                                                 const unsigned char *txTo        , unsigned int txToLen,
-                                                 unsigned int nIn, unsigned int flags, utabitconsensus_error* err);
-
-EXPORT_SYMBOL int utabitconsensus_verify_script_with_amount(const unsigned char *scriptPubKey, unsigned int scriptPubKeyLen, int64_t amount,
                                     const unsigned char *txTo        , unsigned int txToLen,
                                     unsigned int nIn, unsigned int flags, utabitconsensus_error* err);
 

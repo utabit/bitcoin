@@ -1,64 +1,68 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 DIST_SUBDIRS = secp256k1 univalue
 
 AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS)
 AM_CXXFLAGS = $(HARDENED_CXXFLAGS)
 AM_CPPFLAGS = $(HARDENED_CPPFLAGS)
-EXTRA_LIBRARIES =
 
-if EMBEDDED_UNIVALUE
-LIBUNIVALUE = univalue/libunivalue.la
+if EMBEDDED_LEVELDB
+LEVELDB_CPPFLAGS += -I$(srcdir)/leveldb/include
+LEVELDB_CPPFLAGS += -I$(srcdir)/leveldb/helpers/memenv
+LIBLEVELDB += $(builddir)/leveldb/libleveldb.a
+LIBMEMENV  += $(builddir)/leveldb/libmemenv.a
 
-$(LIBUNIVALUE): $(wildcard univalue/lib/*) $(wildcard univalue/include/*)
-	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
-else
-LIBUNIVALUE = $(UNIVALUE_LIBS)
+# NOTE: This dependency is not strictly necessary, but without it make may try to build both in parallel, which breaks the LevelDB build system in a race
+$(LIBLEVELDB): $(LIBMEMENV)
+
+$(LIBLEVELDB) $(LIBMEMENV):
+	@echo "Building LevelDB ..." && $(MAKE) -C $(@D) $(@F) CXX="$(CXX)" \
+	  CC="$(CC)" PLATFORM=$(TARGET_OS) AR="$(AR)" $(LEVELDB_TARGET_FLAGS) \
+          OPT="$(AM_CXXFLAGS) $(PIE_FLAGS) $(CXXFLAGS) $(AM_CPPFLAGS) $(CPPFLAGS) -D__STDC_LIMIT_MACROS"
 endif
 
 UTABIT_CONFIG_INCLUDES=-I$(builddir)/config
-UTABIT_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+UTABIT_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
 UTABIT_INCLUDES += -I$(srcdir)/secp256k1/include
-UTABIT_INCLUDES += $(UNIVALUE_CFLAGS)
+UTABIT_INCLUDES += -I$(srcdir)/univalue/include
 
 LIBUTABIT_SERVER=libutabit_server.a
+LIBUTABIT_WALLET=libutabit_wallet.a
 LIBUTABIT_COMMON=libutabit_common.a
-LIBUTABIT_CONSENSUS=libutabit_consensus.a
 LIBUTABIT_CLI=libutabit_cli.a
 LIBUTABIT_UTIL=libutabit_util.a
 LIBUTABIT_CRYPTO=crypto/libutabit_crypto.a
 LIBUTABITQT=qt/libutabitqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
-
-if ENABLE_ZMQ
-LIBUTABIT_ZMQ=libutabit_zmq.a
-endif
-if BUILD_UTABIT_LIBS
-LIBUTABITCONSENSUS=libutabitconsensus.la
-endif
-if ENABLE_WALLET
-LIBUTABIT_WALLET=libutabit_wallet.a
-endif
+LIBUNIVALUE=univalue/libunivalue.la
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
+	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
+  
+$(LIBUNIVALUE): $(wildcard univalue/lib/*) $(wildcard univalue/include/*)
 	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
 
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
-EXTRA_LIBRARIES += \
-  $(LIBUTABIT_CRYPTO) \
-  $(LIBUTABIT_UTIL) \
-  $(LIBUTABIT_COMMON) \
-  $(LIBUTABIT_CONSENSUS) \
-  $(LIBUTABIT_SERVER) \
-  $(LIBUTABIT_CLI) \
-  $(LIBUTABIT_WALLET) \
-  $(LIBUTABIT_ZMQ)
+EXTRA_LIBRARIES = \
+  crypto/libutabit_crypto.a \
+  libutabit_util.a \
+  libutabit_common.a \
+  libutabit_server.a \
+  libutabit_cli.a
+if ENABLE_WALLET
+UTABIT_INCLUDES += $(BDB_CPPFLAGS)
+EXTRA_LIBRARIES += libutabit_wallet.a
+endif
+if ENABLE_ZMQ
+EXTRA_LIBRARIES += libutabit_zmq.a
+endif
 
-lib_LTLIBRARIES = $(LIBUTABITCONSENSUS)
+if BUILD_UTABIT_LIBS
+lib_LTLIBRARIES = libutabitconsensus.la
+LIBUTABIT_CONSENSUS=libutabitconsensus.la
+else
+LIBUTABIT_CONSENSUS=
+endif
 
 bin_PROGRAMS =
 TESTS =
@@ -70,15 +74,22 @@ endif
 
 if BUILD_UTABIT_UTILS
   bin_PROGRAMS += utabit-cli utabit-tx
+if ENABLE_WALLET
+  bin_PROGRAMS += wallet-utility
+endif
 endif
 
 .PHONY: FORCE check-symbols check-security
 # utabit core #
 UTABIT_CORE_H = \
+  addressindex.h \
+  spentindex.h \
   addrman.h \
+  alert.h \
+  amount.h \
+  arith_uint256.h \
   base58.h \
   bloom.h \
-  blockencodings.h \
   chain.h \
   chainparams.h \
   chainparamsbase.h \
@@ -94,11 +105,14 @@ UTABIT_CORE_H = \
   compat/sanity.h \
   compressor.h \
   consensus/consensus.h \
+  consensus/merkle.h \
+  consensus/params.h \
+  consensus/validation.h \
   core_io.h \
   core_memusage.h \
+  hash.h \
   httprpc.h \
   httpserver.h \
-  indirectmap.h \
   init.h \
   key.h \
   keystore.h \
@@ -115,18 +129,24 @@ UTABIT_CORE_H = \
   policy/policy.h \
   policy/rbf.h \
   pow.h \
+  prevector.h \
+  primitives/block.h \
+  primitives/transaction.h \
   protocol.h \
+  pubkey.h \
   random.h \
   reverselock.h \
-  rpc/client.h \
-  rpc/protocol.h \
-  rpc/server.h \
-  rpc/register.h \
+  rpcclient.h \
+  rpcprotocol.h \
+  rpcserver.h \
   scheduler.h \
+  script/interpreter.h \
+  script/script.h \
+  script/script_error.h \
   script/sigcache.h \
   script/sign.h \
   script/standard.h \
-  script/ismine.h \
+  serialize.h \
   streams.h \
   support/allocators/secure.h \
   support/allocators/zeroafterfree.h \
@@ -135,20 +155,24 @@ UTABIT_CORE_H = \
   sync.h \
   threadsafety.h \
   timedata.h \
+  tinyformat.h \
   torcontrol.h \
   txdb.h \
   txmempool.h \
   ui_interface.h \
+  uint256.h \
   undo.h \
   util.h \
   utilmoneystr.h \
+  utilstrencodings.h \
   utiltime.h \
   validationinterface.h \
+  version.h \
   versionbits.h \
   wallet/crypter.h \
   wallet/db.h \
-  wallet/rpcwallet.h \
   wallet/wallet.h \
+  wallet/wallet_ismine.h \
   wallet/walletdb.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h\
@@ -167,8 +191,8 @@ libutabit_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES) $(MINIUPNPC_CPPF
 libutabit_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libutabit_server_a_SOURCES = \
   addrman.cpp \
+  alert.cpp \
   bloom.cpp \
-  blockencodings.cpp \
   chain.cpp \
   checkpoints.cpp \
   httprpc.cpp \
@@ -184,24 +208,24 @@ libutabit_server_a_SOURCES = \
   policy/policy.cpp \
   pow.cpp \
   rest.cpp \
-  rpc/blockchain.cpp \
-  rpc/mining.cpp \
-  rpc/misc.cpp \
-  rpc/net.cpp \
-  rpc/rawtransaction.cpp \
-  rpc/server.cpp \
+  rpcblockchain.cpp \
+  rpcmining.cpp \
+  rpcmisc.cpp \
+  rpcnet.cpp \
+  rpcrawtransaction.cpp \
+  rpcserver.cpp \
   script/sigcache.cpp \
-  script/ismine.cpp \
   timedata.cpp \
   torcontrol.cpp \
   txdb.cpp \
   txmempool.cpp \
-  ui_interface.cpp \
   validationinterface.cpp \
   versionbits.cpp \
   $(UTABIT_CORE_H)
 
 if ENABLE_ZMQ
+LIBUTABIT_ZMQ=libutabit_zmq.a
+
 libutabit_zmq_a_CPPFLAGS = $(UTABIT_INCLUDES) $(ZMQ_CFLAGS)
 libutabit_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libutabit_zmq_a_SOURCES = \
@@ -221,6 +245,7 @@ libutabit_wallet_a_SOURCES = \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
+  wallet/wallet_ismine.cpp \
   wallet/walletdb.cpp \
   policy/rbf.cpp \
   $(UTABIT_CORE_H)
@@ -229,8 +254,6 @@ libutabit_wallet_a_SOURCES = \
 crypto_libutabit_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_CONFIG_INCLUDES)
 crypto_libutabit_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 crypto_libutabit_crypto_a_SOURCES = \
-  crypto/aes.cpp \
-  crypto/aes.h \
   crypto/common.h \
   crypto/hmac_sha256.cpp \
   crypto/hmac_sha256.h \
@@ -245,57 +268,31 @@ crypto_libutabit_crypto_a_SOURCES = \
   crypto/sha512.cpp \
   crypto/sha512.h
 
-# consensus: shared between all executables that validate any consensus rules.
-libutabit_consensus_a_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES)
-libutabit_consensus_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libutabit_consensus_a_SOURCES = \
-  amount.h \
-  arith_uint256.cpp \
-  arith_uint256.h \
-  consensus/merkle.cpp \
-  consensus/merkle.h \
-  consensus/params.h \
-  consensus/validation.h \
-  hash.cpp \
-  hash.h \
-  prevector.h \
-  primitives/block.cpp \
-  primitives/block.h \
-  primitives/transaction.cpp \
-  primitives/transaction.h \
-  pubkey.cpp \
-  pubkey.h \
-  script/utabitconsensus.cpp \
-  script/interpreter.cpp \
-  script/interpreter.h \
-  script/script.cpp \
-  script/script.h \
-  script/script_error.cpp \
-  script/script_error.h \
-  serialize.h \
-  tinyformat.h \
-  uint256.cpp \
-  uint256.h \
-  utilstrencodings.cpp \
-  utilstrencodings.h \
-  version.h
-
 # common: shared between utabitd, and utabit-qt and non-server tools
 libutabit_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES)
 libutabit_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libutabit_common_a_SOURCES = \
   amount.cpp \
+  arith_uint256.cpp \
   base58.cpp \
   chainparams.cpp \
   coins.cpp \
   compressor.cpp \
+  consensus/merkle.cpp \
   core_read.cpp \
   core_write.cpp \
+  hash.cpp \
   key.cpp \
   keystore.cpp \
   netbase.cpp \
+  primitives/block.cpp \
+  primitives/transaction.cpp \
   protocol.cpp \
+  pubkey.cpp \
   scheduler.cpp \
+  script/interpreter.cpp \
+  script/script.cpp \
+  script/script_error.cpp \
   script/sign.cpp \
   script/standard.cpp \
   $(UTABIT_CORE_H)
@@ -313,9 +310,10 @@ libutabit_util_a_SOURCES = \
   compat/glibcxx_sanity.cpp \
   compat/strnlen.cpp \
   random.cpp \
-  rpc/protocol.cpp \
+  rpcprotocol.cpp \
   support/cleanse.cpp \
   sync.cpp \
+  uint256.cpp \
   util.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
@@ -330,7 +328,7 @@ endif
 libutabit_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES)
 libutabit_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libutabit_cli_a_SOURCES = \
-  rpc/client.cpp \
+  rpcclient.cpp \
   $(UTABIT_CORE_H)
 
 nodist_libutabit_util_a_SOURCES = $(srcdir)/obj/build.h
@@ -351,21 +349,34 @@ utabitd_LDADD = \
   $(LIBUTABIT_COMMON) \
   $(LIBUNIVALUE) \
   $(LIBUTABIT_UTIL) \
-  $(LIBUTABIT_WALLET) \
-  $(LIBUTABIT_ZMQ) \
-  $(LIBUTABIT_CONSENSUS) \
   $(LIBUTABIT_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-utabitd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+if ENABLE_ZMQ
+utabitd_LDADD += $(LIBUTABIT_ZMQ) $(ZMQ_LIBS)
+endif
+
+if ENABLE_WALLET
+utabitd_LDADD += libutabit_wallet.a
+endif
+
+utabitd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 
 # utabit-cli binary #
 utabit_cli_SOURCES = utabit-cli.cpp
 utabit_cli_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES) $(EVENT_CFLAGS)
 utabit_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 utabit_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+
+# wallet-utility binary #
+if ENABLE_WALLET
+wallet_utility_SOURCES = wallet-utility.cpp
+wallet_utility_CPPFLAGS = $(AM_CPPFLAGS) $(UTABIT_INCLUDES) $(EVENT_CFLAG)
+wallet_utility_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+wallet_utility_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+endif
 
 if TARGET_WINDOWS
 utabit_cli_SOURCES += utabit-cli-res.rc
@@ -374,10 +385,13 @@ endif
 utabit_cli_LDADD = \
   $(LIBUTABIT_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBUTABIT_UTIL) \
-  $(LIBUTABIT_CRYPTO)
+  $(LIBUTABIT_UTIL)
 
 utabit_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+if ENABLE_WALLET
+wallet_utility_LDADD = libutabit_wallet.a $(LIBUTABIT_COMMON) $(LIBUTABIT_CRYPTO) $(LIBSECP256K1) $(LIBUTABIT_UTIL) $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS)
+endif
+
 #
 
 # utabit-tx binary #
@@ -394,7 +408,6 @@ utabit_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBUTABIT_COMMON) \
   $(LIBUTABIT_UTIL) \
-  $(LIBUTABIT_CONSENSUS) \
   $(LIBUTABIT_CRYPTO) \
   $(LIBSECP256K1)
 
@@ -404,7 +417,20 @@ utabit_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # utabitconsensus library #
 if BUILD_UTABIT_LIBS
 include_HEADERS = script/utabitconsensus.h
-libutabitconsensus_la_SOURCES = $(crypto_libutabit_crypto_a_SOURCES) $(libutabit_consensus_a_SOURCES)
+libutabitconsensus_la_SOURCES = \
+  crypto/hmac_sha512.cpp \
+  crypto/ripemd160.cpp \
+  crypto/sha1.cpp \
+  crypto/sha256.cpp \
+  crypto/sha512.cpp \
+  hash.cpp \
+  primitives/transaction.cpp \
+  pubkey.cpp \
+  script/utabitconsensus.cpp \
+  script/interpreter.cpp \
+  script/script.cpp \
+  uint256.cpp \
+  utilstrencodings.cpp
 
 if GLIBC_BACK_COMPAT
   libutabitconsensus_la_SOURCES += compat/glibc_compat.cpp
@@ -418,14 +444,7 @@ libutabitconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 endif
 #
 
-CTAES_DIST =  crypto/ctaes/bench.c
-CTAES_DIST += crypto/ctaes/ctaes.c
-CTAES_DIST += crypto/ctaes/ctaes.h
-CTAES_DIST += crypto/ctaes/README.md
-CTAES_DIST += crypto/ctaes/test.c
-
-CLEANFILES = $(EXTRA_LIBRARIES)
-
+CLEANFILES = leveldb/libleveldb.a leveldb/libmemenv.a
 CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += consensus/*.gcda consensus/*.gcno
@@ -441,19 +460,18 @@ CLEANFILES += zmq/*.gcda zmq/*.gcno
 
 DISTCLEANFILES = obj/build.h
 
-EXTRA_DIST = $(CTAES_DIST)
+EXTRA_DIST = leveldb
 
 clean-local:
+	-$(MAKE) -C leveldb clean
 	-$(MAKE) -C secp256k1 clean
 	-$(MAKE) -C univalue clean
 	-rm -f leveldb/*/*.gcda leveldb/*/*.gcno leveldb/helpers/memenv/*.gcda leveldb/helpers/memenv/*.gcno
 	-rm -f config.h
-	-rm -rf test/__pycache__
 
 .rc.o:
 	@test -f $(WINDRES)
-	## FIXME: How to get the appropriate modulename_CPPFLAGS in here?
-	$(AM_V_GEN) $(WINDRES) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DWINDRES_PREPROC -i $< -o $@
+	$(AM_V_GEN) $(WINDRES) -DWINDRES_PREPROC -i $< -o $@
 
 .mm.o:
 	$(AM_V_CXX) $(OBJCXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -473,11 +491,7 @@ endif
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)
-	$(AM_V_GEN) $(PROTOC) --cpp_out=$(@D) --proto_path=$(<D) $<
-
-if EMBEDDED_LEVELDB
-include Makefile.leveldb.include
-endif
+	$(AM_V_GEN) $(PROTOC) --cpp_out=$(@D) --proto_path=$(abspath $(<D) $<)
 
 if ENABLE_TESTS
 include Makefile.test.include

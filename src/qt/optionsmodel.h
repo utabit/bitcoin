@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -28,7 +28,6 @@ public:
 
     enum OptionID {
         StartAtStartup,         // bool
-        HideTrayIcon,           // bool
         MinimizeToTray,         // bool
         MapPortUPnP,            // bool
         MinimizeOnClose,        // bool
@@ -59,7 +58,6 @@ public:
     void setDisplayUnit(const QVariant &value);
 
     /* Explicit getters */
-    bool getHideTrayIcon() { return fHideTrayIcon; }
     bool getMinimizeToTray() { return fMinimizeToTray; }
     bool getMinimizeOnClose() { return fMinimizeOnClose; }
     int getDisplayUnit() { return nDisplayUnit; }
@@ -74,7 +72,6 @@ public:
 
 private:
     /* Qt-only settings */
-    bool fHideTrayIcon;
     bool fMinimizeToTray;
     bool fMinimizeOnClose;
     QString language;
@@ -84,15 +81,12 @@ private:
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 
-    // Add option to list of GUI options overridden through command line/config file
+    /// Add option to list of GUI options overridden through command line/config file
     void addOverriddenOption(const std::string &option);
 
-    // Check settings version and upgrade default values if required
-    void checkAndMigrate();
 Q_SIGNALS:
     void displayUnitChanged(int unit);
     void coinControlFeaturesChanged(bool);
-    void hideTrayIconChanged(bool);
 };
 
 #endif // UTABIT_QT_OPTIONSMODEL_H

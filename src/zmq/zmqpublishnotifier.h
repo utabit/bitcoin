@@ -1,4 +1,4 @@
-// Copyright (c) 2015 The Bitcoin Core developers
+// Copyright (c) 2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,19 +11,7 @@ class CBlockIndex;
 
 class CZMQAbstractPublishNotifier : public CZMQAbstractNotifier
 {
-private:
-    uint32_t nSequence; //!< upcounting per message sequence number
-
 public:
-
-    /* send zmq multipart message
-       parts:
-          * command
-          * data
-          * message sequence number
-    */
-    bool SendMessage(const char *command, const void* data, size_t size);
-
     bool Initialize(void *pcontext);
     void Shutdown();
 };

@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2015 The Bitcoin Core developers
+// Copyright (c) 2012-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -110,11 +110,8 @@ public:
  * reset() is provided, which also changes nTweak to decrease the impact of
  * false-positives.
  *
- * contains(item) will always return true if item was one of the last N to 1.5*N
+ * contains(item) will always return true if item was one of the last N things
  * insert()'ed ... but may also return true for items that were not inserted.
- *
- * It needs around 1.8 bytes per element per factor 0.1 of false positive rate.
- * (More accurately: 3/(log(256)*log(2)) * log(1/fpRate) * nElements bytes)
  */
 class CRollingBloomFilter
 {
@@ -132,12 +129,10 @@ public:
     void reset();
 
 private:
-    int nEntriesPerGeneration;
-    int nEntriesThisGeneration;
-    int nGeneration;
-    std::vector<uint64_t> data;
-    unsigned int nTweak;
-    int nHashFuncs;
+    unsigned int nBloomSize;
+    unsigned int nInsertions;
+    CBloomFilter b1, b2;
 };
+
 
 #endif // UTABIT_BLOOM_H

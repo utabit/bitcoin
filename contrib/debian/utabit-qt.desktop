@@ -1,8 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Utabit Core
-Comment=Connect to the Utabit P2P Network
-Comment[de]=Verbinde mit dem Utabit peer-to-peer Netzwerk
+Name=Utabit
+Comment=Utabit P2P Cryptocurrency
 Comment[fr]=Utabit, monnaie virtuelle cryptographique pair à pair
 Comment[tr]=Utabit, eşten eşe kriptografik sanal para birimi
 Exec=utabit-qt %u

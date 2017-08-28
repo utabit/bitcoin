@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,7 +26,7 @@
 #endif
 
 #include "init.h"
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "scheduler.h"
 #include "ui_interface.h"
 #include "util.h"
@@ -245,7 +245,6 @@ private:
 #endif
     int returnValue;
     const PlatformStyle *platformStyle;
-    std::unique_ptr<QWidget> shutdownWindow;
 
     void startThread();
 };
@@ -366,11 +365,11 @@ void UtabitApplication::createWindow(const NetworkStyle *networkStyle)
 void UtabitApplication::createSplashScreen(const NetworkStyle *networkStyle)
 {
     SplashScreen *splash = new SplashScreen(0, networkStyle);
-    // We don't hold a direct pointer to the splash screen after creation, but the splash
-    // screen will take care of deleting itself when slotFinish happens.
+    // We don't hold a direct pointer to the splash screen after creation, so use
+    // Qt::WA_DeleteOnClose to make sure that the window will be deleted eventually.
+    splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->show();
     connect(this, SIGNAL(splashFinished(QWidget*)), splash, SLOT(slotFinish(QWidget*)));
-    connect(this, SIGNAL(requestedShutdown()), splash, SLOT(close()));
 }
 
 void UtabitApplication::startThread()
@@ -409,11 +408,6 @@ void UtabitApplication::requestInitialize()
 
 void UtabitApplication::requestShutdown()
 {
-    // Show a simple window indicating shutdown status
-    // Do this first as some of the steps may take some time below,
-    // for example the RPC console may still be executing a command.
-    shutdownWindow.reset(ShutdownWindow::showShutdownWindow(window));
-
     qDebug() << __func__ << ": Requesting shutdown";
     startThread();
     window->hide();
@@ -427,6 +421,9 @@ void UtabitApplication::requestShutdown()
 #endif
     delete clientModel;
     clientModel = 0;
+
+    // Show a simple window indicating shutdown status
+    ShutdownWindow::showShutdownWindow(window);
 
     // Request shutdown from core thread
     Q_EMIT requestedShutdown();
@@ -498,7 +495,7 @@ void UtabitApplication::shutdownResult(int retval)
 void UtabitApplication::handleRunawayException(const QString &message)
 {
     QMessageBox::critical(0, "Runaway exception", UtabitGUI::tr("A fatal error occurred. Utabit can no longer continue safely and will quit.") + QString("\n\n") + message);
-    ::exit(EXIT_FAILURE);
+    ::exit(1);
 }
 
 WId UtabitApplication::getMainWinId() const
@@ -534,9 +531,6 @@ int main(int argc, char *argv[])
 #if QT_VERSION > 0x050100
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
-#if QT_VERSION >= 0x050600
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
@@ -575,28 +569,27 @@ int main(int argc, char *argv[])
     {
         HelpMessageDialog help(NULL, mapArgs.count("-version"));
         help.showOrPrint();
-        return EXIT_SUCCESS;
+        return 1;
     }
 
     /// 5. Now that settings and translations are available, ask user for data directory
     // User language is set up: pick a data directory
-    if (!Intro::pickDataDirectory())
-        return EXIT_SUCCESS;
+    Intro::pickDataDirectory();
 
     /// 6. Determine availability of data directory and parse utabit.conf
     /// - Do not call GetDataDir(true) before this step finishes
     if (!boost::filesystem::is_directory(GetDataDir(false)))
     {
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
+        QMessageBox::critical(0, QObject::tr("Utabit Core"),
                               QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
-        return EXIT_FAILURE;
+        return 1;
     }
     try {
         ReadConfigFile(mapArgs, mapMultiArgs);
     } catch (const std::exception& e) {
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
+        QMessageBox::critical(0, QObject::tr("Utabit Core"),
                               QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
-        return EXIT_FAILURE;
+        return false;
     }
 
     /// 7. Determine network (and switch to network specific options)
@@ -609,8 +602,8 @@ int main(int argc, char *argv[])
     try {
         SelectParams(ChainNameFromCommandLine());
     } catch(std::exception &e) {
-        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME), QObject::tr("Error: %1").arg(e.what()));
-        return EXIT_FAILURE;
+        QMessageBox::critical(0, QObject::tr("Utabit Core"), QObject::tr("Error: %1").arg(e.what()));
+        return 1;
     }
 #ifdef ENABLE_WALLET
     // Parse URIs on command line -- this can affect Params()
@@ -632,7 +625,7 @@ int main(int argc, char *argv[])
     // - Do this after creating app and setting up translations, so errors are
     // translated properly.
     if (PaymentServer::ipcSendCommandLine())
-        exit(EXIT_SUCCESS);
+        exit(0);
 
     // Start up the payment server early, too, so impatient users that click on
     // utabit: links repeatedly have their payment requests routed to this process:
@@ -669,7 +662,7 @@ int main(int argc, char *argv[])
         app.createWindow(networkStyle.data());
         app.requestInitialize();
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
-        WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("%1 didn't yet exit safely...").arg(QObject::tr(PACKAGE_NAME)), (HWND)app.getMainWinId());
+        WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("Utabit Core didn't yet exit safely..."), (HWND)app.getMainWinId());
 #endif
         app.exec();
         app.requestShutdown();

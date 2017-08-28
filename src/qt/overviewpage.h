@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,7 +8,6 @@
 #include "amount.h"
 
 #include <QWidget>
-#include <memory>
 
 class ClientModel;
 class TransactionFilterProxy;
@@ -56,7 +55,7 @@ private:
     CAmount currentWatchImmatureBalance;
 
     TxViewDelegate *txdelegate;
-    std::unique_ptr<TransactionFilterProxy> filter;
+    TransactionFilterProxy *filter;
 
 private Q_SLOTS:
     void updateDisplayUnit();

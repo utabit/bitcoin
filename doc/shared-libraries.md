@@ -11,7 +11,7 @@ The interface is defined in the C header `utabitconsensus.h` located in  `src/sc
 
 #### Version
 
-`utabitconsensus_version` returns an `unsigned int` with the API version *(currently at an experimental `0`)*.
+`utabitconsensus_version` returns an `unsigned int` with the the API version *(currently at an experimental `0`)*.
 
 #### Script Validation
 
@@ -30,16 +30,15 @@ The interface is defined in the C header `utabitconsensus.h` located in  `src/sc
 - `utabitconsensus_SCRIPT_FLAGS_VERIFY_NONE`
 - `utabitconsensus_SCRIPT_FLAGS_VERIFY_P2SH` - Evaluate P2SH ([BIP16](https://github.com/utabit/bips/blob/master/bip-0016.mediawiki)) subscripts
 - `utabitconsensus_SCRIPT_FLAGS_VERIFY_DERSIG` - Enforce strict DER ([BIP66](https://github.com/utabit/bips/blob/master/bip-0066.mediawiki)) compliance
-- `utabitconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY` - Enforce NULLDUMMY ([BIP147](https://github.com/utabit/bips/blob/master/bip-0147.mediawiki))
-- `utabitconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY` - Enable CHECKLOCKTIMEVERIFY ([BIP65](https://github.com/utabit/bips/blob/master/bip-0065.mediawiki))
-- `utabitconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY` - Enable CHECKSEQUENCEVERIFY ([BIP112](https://github.com/utabit/bips/blob/master/bip-0112.mediawiki))
-- `utabitconsensus_SCRIPT_FLAGS_VERIFY_WITNESS` - Enable WITNESS ([BIP141](https://github.com/utabit/bips/blob/master/bip-0141.mediawiki))
 
 ##### Errors
 - `utabitconsensus_ERR_OK` - No errors with input parameters *(see the return value of `utabitconsensus_verify_script` for the verification status)*
 - `utabitconsensus_ERR_TX_INDEX` - An invalid index for `txTo`
 - `utabitconsensus_ERR_TX_SIZE_MISMATCH` - `txToLen` did not match with the size of `txTo`
 - `utabitconsensus_ERR_DESERIALIZE` - An error deserializing `txTo`
-- `utabitconsensus_ERR_AMOUNT_REQUIRED` - Input amount is required if WITNESS is used
 
 ### Example Implementations
+- [NUtabit](https://github.com/NicolasDorier/NUtabit/blob/master/NUtabit/Script.cs#L814) (.NET Bindings)
+- [node-libutabitconsensus](https://github.com/bitpay/node-libutabitconsensus) (Node.js Bindings)
+- [java-libutabitconsensus](https://github.com/dexX7/java-libutabitconsensus) (Java Bindings)
+- [utabitconsensus-php](https://github.com/Bit-Wasp/utabitconsensus-php) (PHP Bindings)

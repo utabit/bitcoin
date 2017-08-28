@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -116,6 +116,7 @@ public:
 
     CTxDestination Get() const;
     bool GetKeyID(CKeyID &keyID) const;
+    bool GetIndexKey(uint160& hashBytes, int& type) const;
     bool IsScript() const;
 };
 
@@ -164,7 +165,7 @@ public:
     CUtabitExtKeyBase() {}
 };
 
-typedef CUtabitExtKeyBase<CExtKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_SECRET_KEY> CUtabitExtKey;
-typedef CUtabitExtKeyBase<CExtPubKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_PUBLIC_KEY> CUtabitExtPubKey;
+typedef CUtabitExtKeyBase<CExtKey, 74, CChainParams::EXT_SECRET_KEY> CUtabitExtKey;
+typedef CUtabitExtKeyBase<CExtPubKey, 74, CChainParams::EXT_PUBLIC_KEY> CUtabitExtPubKey;
 
 #endif // UTABIT_BASE58_H

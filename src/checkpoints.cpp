@@ -1,4 +1,5 @@
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+
+// Copyright (c) 2009-2015 The Utabit Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,8 +28,8 @@ namespace Checkpoints {
 
     //! Guess how far we are in the verification process at the given block index
     double GuessVerificationProgress(const CCheckpointData& data, CBlockIndex *pindex, bool fSigchecks) {
-	return 1.0 ; 
-       /* if (pindex==NULL)
+      return 1.0 ;
+        /* if (pindex==NULL)
             return 0.0;
 
         int64_t nNow = time(NULL);
@@ -54,14 +55,25 @@ namespace Checkpoints {
         }
 
         return fWorkBefore / (fWorkBefore + fWorkAfter);
-*/
+        */
+    }
+
+    int GetTotalBlocksEstimate(const CCheckpointData& data)
+    {
+        return 0;
+ /*       const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+        if (checkpoints.empty())
+            return 0;
+
+        return checkpoints.rbegin()->first;*/
     }
 
     CBlockIndex* GetLastCheckpoint(const CCheckpointData& data)
     {
- 	return NULL; 
-/*     
- 	const MapCheckpoints& checkpoints = data.mapCheckpoints;
+ return NULL;
+        /*
+        const MapCheckpoints& checkpoints = data.mapCheckpoints;
 
         BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, checkpoints)
         {
