@@ -111,7 +111,7 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x00000000014c99fcb1d0b9c0791b0b048d6fc1f015d5531e825614bc3f6b2da8"));
         assert(genesis.hashMerkleRoot == uint256S("0x1bf4701a5a587ec85023fc2231006b1b07deca798ea924a80620e65baf50e2fa"));
 
-        vSeeds.push_back(CDNSSeedData("utabitdns.com", "dns.utabitdns.com", true)); // utabit DNSSeed
+        vSeeds.push_back(CDNSSeedData("utabitdns.com", "dns.utabitdns.com")); // utabit DNSSeed
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
