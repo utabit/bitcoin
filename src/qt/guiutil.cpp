@@ -173,7 +173,7 @@ bool parseUtabitURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!UtabitUnits::parse(UtabitUnits::UBIT, i->second, &rv.amount))
+                if(!UtabitUnits::parse(UtabitUnits::UTB, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -212,7 +212,7 @@ QString formatUtabitURI(const SendCoinsRecipient &info)
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(UtabitUnits::format(UtabitUnits::UBIT, info.amount, false, UtabitUnits::separatorNever));
+        ret += QString("?amount=%1").arg(UtabitUnits::format(UtabitUnits::UTB, info.amount, false, UtabitUnits::separatorNever));
         paramCount++;
     }
 
