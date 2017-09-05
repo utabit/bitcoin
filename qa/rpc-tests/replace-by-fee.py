@@ -139,7 +139,7 @@ class ReplaceByFeeTest(UtabitTestFramework):
         else:
             assert(False)
 
-        # Extra 0.1 UBIT fee
+        # Extra 0.1 UTB fee
         tx1b = CTransaction()
         tx1b.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         tx1b.vout = [CTxOut(int(0.9*COIN), CScript([b'b']))]
@@ -173,7 +173,7 @@ class ReplaceByFeeTest(UtabitTestFramework):
             prevout = COutPoint(int(txid, 16), 0)
 
         # Whether the double-spend is allowed is evaluated by including all
-        # child fees - 40 UBIT - so this attempt is rejected.
+        # child fees - 40 UTB - so this attempt is rejected.
         dbl_tx = CTransaction()
         dbl_tx.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         dbl_tx.vout = [CTxOut(initial_nValue - 30*COIN, CScript([1]))]
@@ -251,7 +251,7 @@ class ReplaceByFeeTest(UtabitTestFramework):
         else:
             assert(False)
 
-        # 1 UBIT fee is enough
+        # 1 UTB fee is enough
         dbl_tx = CTransaction()
         dbl_tx.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         dbl_tx.vout = [CTxOut(initial_nValue - fee*n - 1*COIN, CScript([1]))]

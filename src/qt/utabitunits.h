@@ -56,9 +56,9 @@ public:
      */
     enum Unit
     {
-        UBIT,
-        mUBIT,
-        uUBIT
+        UTB,
+        mUTB,
+        uUTB
     };
 
     enum SeparatorStyle

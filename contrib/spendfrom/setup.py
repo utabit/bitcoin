@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 from distutils.core import setup
-setup(name='ubitspendfrom',
+setup(name='utbspendfrom',
       version='1.0',
       description='Command-line utility for utabit "coin control"',
       author='Gavin Andresen',
