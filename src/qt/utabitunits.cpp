@@ -17,9 +17,9 @@ UtabitUnits::UtabitUnits(QObject *parent):
 QList<UtabitUnits::Unit> UtabitUnits::availableUnits()
 {
     QList<UtabitUnits::Unit> unitlist;
-    unitlist.append(UBIT);
-    unitlist.append(mUBIT);
-    unitlist.append(uUBIT);
+    unitlist.append(UTB);
+    unitlist.append(mUTB);
+    unitlist.append(uUTB);
     return unitlist;
 }
 
@@ -27,9 +27,9 @@ bool UtabitUnits::valid(int unit)
 {
     switch(unit)
     {
-    case UBIT:
-    case mUBIT:
-    case uUBIT:
+    case UTB:
+    case mUTB:
+    case uUTB:
         return true;
     default:
         return false;
@@ -40,9 +40,9 @@ QString UtabitUnits::name(int unit)
 {
     switch(unit)
     {
-    case UBIT: return QString("UBIT");
-    case mUBIT: return QString("mUBIT");
-    case uUBIT: return QString::fromUtf8("μUBIT");
+    case UTB: return QString("UTB");
+    case mUTB: return QString("mUTB");
+    case uUTB: return QString::fromUtf8("μUTB");
     default: return QString("???");
     }
 }
@@ -51,9 +51,9 @@ QString UtabitUnits::description(int unit)
 {
     switch(unit)
     {
-    case UBIT: return QString("Utabits");
-    case mUBIT: return QString("Milli-Utabits (1 / 1" THIN_SP_UTF8 "000)");
-    case uUBIT: return QString("Micro-Utabits (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case UTB: return QString("Utabits");
+    case mUTB: return QString("Milli-Utabits (1 / 1" THIN_SP_UTF8 "000)");
+    case uUTB: return QString("Micro-Utabits (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }
@@ -62,9 +62,9 @@ qint64 UtabitUnits::factor(int unit)
 {
     switch(unit)
     {
-    case UBIT:  return 100000000;
-    case mUBIT: return 100000;
-    case uUBIT: return 100;
+    case UTB:  return 100000000;
+    case mUTB: return 100000;
+    case uUTB: return 100;
     default:   return 100000000;
     }
 }
@@ -73,9 +73,9 @@ int UtabitUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case UBIT: return 8;
-    case mUBIT: return 5;
-    case uUBIT: return 2;
+    case UTB: return 8;
+    case mUTB: return 5;
+    case uUTB: return 2;
     default: return 0;
     }
 }

@@ -445,10 +445,10 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 cd /some/root/path/
 git clone https://github.com/utabit-core/utabit-detached-sigs.git
 
-UBITPATH=/some/root/path/utabit
+UTBPATH=/some/root/path/utabit
 SIGPATH=/some/root/path/utabit-detached-sigs
 
-./bin/gbuild --url utabit=${UBITPATH},signature=${SIGPATH} ../utabit/contrib/gitian-descriptors/gitian-win-signer.yml
+./bin/gbuild --url utabit=${UTBPATH},signature=${SIGPATH} ../utabit/contrib/gitian-descriptors/gitian-win-signer.yml
 ```
 
 Signing externally
